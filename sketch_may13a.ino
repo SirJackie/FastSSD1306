@@ -1,4 +1,4 @@
-#include <Wire.h>
+#include "FastWire.h"
 
 void WriteCommand(char command){
   Wire.beginTransmission(0x3C);
@@ -81,11 +81,10 @@ void loop() {
     }
   
     if(i == 8){
-      while(1){
-        ;
-      }
+      break;
     }
+    RefreshBuffer();
   }
 
-  RefreshBuffer();
+  
 }
