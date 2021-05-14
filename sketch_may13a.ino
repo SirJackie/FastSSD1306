@@ -1,14 +1,10 @@
 #include <Wire.h>
 
-int tcount = 0;
-
 void WriteCommand(char command){
   Wire.beginTransmission(0x3C);
   Wire.write(0x00);
   Wire.write(command);
   Wire.endTransmission();
-  tcount++;
-//  Serial.println(tcount);
 }
 
 void WriteData(char data){
@@ -16,16 +12,9 @@ void WriteData(char data){
   Wire.write(0x40);
   Wire.write(data);
   Wire.endTransmission();
-//  delay(10);
-  tcount++;
-//  Serial.println(tcount);
 }
 
 void setup() {
-  // put your setup code here, to run once:
-
-  Serial.begin(9600);
-
   Wire.begin();
   
   WriteCommand(0xAE);//--turn off oled panel
@@ -58,40 +47,6 @@ void setup() {
   WriteCommand(0xAF);
   
   WriteCommand(0xAF);
-  // put your main code here, to run repeatedly:
-  int i, n;
-  for (i = 0; i < 8; i++)
-  {
-    WriteCommand(0xb0 + i);  //设置页地址(0~7)
-    WriteCommand(0x00);      //设置显示位置—列低地址
-    WriteCommand(0x10);      //设置显示位置—列高地址
-    for (n = 0; n < 128; n++){
-      WriteData(255);
-    }
-  }
-}
-
-int count = 1;
-
-void loop() {
-//  WriteCommand(0xAF);
-//  // put your main code here, to run repeatedly:
-//  int i, n;
-//  for (i = 0; i < 8; i++)
-//  {
-//    WriteCommand(0xb0 + i);  //设置页地址(0~7)
-//    WriteCommand(0x00);      //设置显示位置—列低地址
-//    WriteCommand(0x10);      //设置显示位置—列高地址
-//    for (n = 0; n < 128; n++){
-//      WriteData(count);
-////      delayMicroseconds(0);
-//    }
-//  }
-//
-////  delay(1000);
-//  count += 1;
-  WriteCommand(0xAF);
-  // put your main code here, to run repeatedly:
   int i, n;
   for (i = 0; i < 8; i++)
   {
@@ -102,6 +57,27 @@ void loop() {
       WriteData(254);
     }
   }
-  Serial.println("alpha");
-//  delay(50);
+}
+
+int count = 1;
+
+void loop() {
+  WriteCommand(0xAF);
+  int i, n;
+  for (i = 0; i < 8; i++)
+  {
+    WriteCommand(0xb0 + i);  //设置页地址(0~7)
+    WriteCommand(0x00);      //设置显示位置—列低地址
+    WriteCommand(0x10);      //设置显示位置—列高地址
+    for (n = 0; n < 128; n++){
+      WriteData(count);
+    }
+  }
+
+  count++;
+
+  if(count == 255){
+    count = 0;
+  }
+  
 }
