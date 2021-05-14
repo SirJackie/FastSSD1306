@@ -8,7 +8,7 @@ void WriteCommand(char command){
   Wire.write(command);
   Wire.endTransmission();
   tcount++;
-  Serial.println(tcount);
+//  Serial.println(tcount);
 }
 
 void WriteData(char data){
@@ -16,15 +16,17 @@ void WriteData(char data){
   Wire.write(0x40);
   Wire.write(data);
   Wire.endTransmission();
-  delay(10);
+//  delay(10);
   tcount++;
-  Serial.println(tcount);
+//  Serial.println(tcount);
 }
 
 void setup() {
   // put your setup code here, to run once:
 
   Serial.begin(9600);
+
+  Wire.begin();
   
   WriteCommand(0xAE);//--turn off oled panel
   WriteCommand(0x00);//---set low column address
