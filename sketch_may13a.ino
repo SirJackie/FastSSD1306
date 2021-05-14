@@ -1,10 +1,14 @@
 #include <Wire.h>
 
+int tcount = 0;
+
 void WriteCommand(char command){
   Wire.beginTransmission(0x3C);
   Wire.write(0x00);
   Wire.write(command);
   Wire.endTransmission();
+  tcount++;
+  Serial.println(tcount);
 }
 
 void WriteData(char data){
@@ -13,6 +17,8 @@ void WriteData(char data){
   Wire.write(data);
   Wire.endTransmission();
   delay(10);
+  tcount++;
+  Serial.println(tcount);
 }
 
 void setup() {
