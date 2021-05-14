@@ -14,17 +14,21 @@ void WriteDatum(char data){
   Wire.endTransmission();
 }
 
-void StartWirtingMultiCommands(){
+void StartWritingMultiCommands(){
   Wire.beginTransmission(0x3C);
   Wire.write(0x80);
 }
 
-void StartWirtingMultiData(){
+void StartWritingMultiData(){
   Wire.beginTransmission(0x3C);
   Wire.write(0xC0);
 }
 
 void WriteMultiCommands(char command){
+  Wire.write(command);
+}
+
+void WriteMultiData(char command){
   Wire.write(command);
 }
 
@@ -34,7 +38,7 @@ void EndWritingMultiThings(){
 
 void OledInit(){
 
-  StartWirtingMultiCommands();
+  StartWritingMultiCommands();
   WriteMultiCommands(0xAE);//--turn off oled panel
   WriteMultiCommands(0x00);//---set low column address
   WriteMultiCommands(0x10);//---set high column address
