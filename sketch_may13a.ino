@@ -14,9 +14,7 @@ void WriteData(char data){
   Wire.endTransmission();
 }
 
-void setup() {
-  Wire.begin();
-  
+void OledInit(){
   WriteCommand(0xAE);//--turn off oled panel
   WriteCommand(0x00);//---set low column address
   WriteCommand(0x10);//---set high column address
@@ -45,7 +43,11 @@ void setup() {
   WriteCommand(0xA4);
   WriteCommand(0xA6);
   WriteCommand(0xAF);
-  
+}
+
+unsigned char FrameBuffer[8][128] = {0};
+
+void RefreshBuffer(){
   WriteCommand(0xAF);
   int i, n;
   for (i = 0; i < 8; i++)
@@ -54,30 +56,36 @@ void setup() {
     WriteCommand(0x00);      //设置显示位置—列低地址
     WriteCommand(0x10);      //设置显示位置—列高地址
     for (n = 0; n < 128; n++){
-      WriteData(254);
+      WriteData(FrameBuffer[i][n]);
     }
   }
 }
 
-int count = 1;
+void setup() {
+//  Serial.begin(9600);
+  Wire.begin();
+  OledInit();
+}
+
+int i = 0;
+int n = 0;
 
 void loop() {
-  WriteCommand(0xAF);
-  int i, n;
-  for (i = 0; i < 8; i++)
-  {
-    WriteCommand(0xb0 + i);  //设置页地址(0~7)
-    WriteCommand(0x00);      //设置显示位置—列低地址
-    WriteCommand(0x10);      //设置显示位置—列高地址
-    for (n = 0; n < 128; n++){
-      WriteData(count);
+  
+  for(int j = 0; j < 5; j++){
+    FrameBuffer[i][n] = 255;
+    n++;
+    if(n == 127){
+      n = 0;
+      i += 1;
+    }
+  
+    if(i == 8){
+      while(1){
+        ;
+      }
     }
   }
 
-  count++;
-
-  if(count == 255){
-    count = 0;
-  }
-  
+  RefreshBuffer();
 }
