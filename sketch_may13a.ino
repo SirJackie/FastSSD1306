@@ -16,7 +16,6 @@ void WriteDatum(char data){
 
 void StartWritingMultiCommands(){
   Wire.beginTransmission(0x3C);
-  Wire.write(0x80);
 }
 
 void StartWritingMultiData(){
@@ -24,7 +23,10 @@ void StartWritingMultiData(){
   Wire.write(0xC0);
 }
 
-#define WriteMultiThings(command) Wire.write(command)
+void WriteMultiThings(char command){
+  Wire.write(0x80);
+  Wire.write(command);
+}
 
 void EndWritingMultiThings(){
   Wire.endTransmission();
@@ -71,33 +73,14 @@ void RefreshBuffer(){
   int i, n;
   for (i = 0; i < 8; i++)
   {
-    WriteCommand(0xb0 + i);  //设置页地址(0~7)
-    WriteCommand(0x00);      //设置显示位置—列低地址
-    WriteCommand(0x10);      //设置显示位置—列高地址
-    for (n = 0; n < 128; n++){
-      WriteDatum(FrameBuffer[i][n]);
-    }
-  }
-}
-
-void RefreshNewBuffer(){
-  WriteCommand(0xAF);
-  int i, n;
-  for (i = 0; i < 8; i++)
-  {
-    // Set Refreshing Area
     StartWritingMultiCommands();
     WriteMultiThings(0xb0 + i);  // Set Page Address(0-7)
     WriteMultiThings(0x00);      // Set Low  Row Address
     WriteMultiThings(0x10);      // Set High Row Address
     EndWritingMultiThings();
-
-    // Refresh it
-    StartWritingMultiData();
     for (n = 0; n < 128; n++){
-      WriteMultiThings(FrameBuffer[i][n]);
+      WriteDatum(FrameBuffer[i][n]);
     }
-    EndWritingMultiThings();
   }
 }
 
